@@ -4,31 +4,47 @@ import java.util.regex.*;
 
 public class Main {
     public static void main(String[] args) {
-        String text = "Hello 123, Java 456, regex 789!";
-        System.out.println("Original text: " + text);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter a string:");
+        String input = scanner.nextLine();
 
-        StringBuffer sb = new StringBuffer(text);
-        sb.reverse();
-        System.out.println("Reversed text (StringBuffer): " + sb);
+        input = input.trim();
 
-        String[] words = text.split("\\s+"); 
-        List<String> wordList = new ArrayList<>(Arrays.asList(words));
-        System.out.println("List of words: " + wordList);
+        Pattern pattern = Pattern.compile("[A-Za-zА-Яа-яЁё]+");
+        Matcher matcher = pattern.matcher(input);
 
-        Pattern p = Pattern.compile("\\d+"); 
-        Matcher m = p.matcher(text);
-        System.out.print("Numbers in text: ");
-        while (m.find()) {
-            System.out.print(m.group() + " ");
+        List<String> words = new ArrayList<>();
+
+        while (matcher.find()) {
+            words.add(matcher.group());
         }
-        System.out.println();
 
-        Map<Character, Integer> charCount = new HashMap<>();
-        for (char ch : text.toCharArray()) {
-            if (Character.isLetter(ch)) {
-                charCount.put(ch, charCount.getOrDefault(ch, 0) + 1);
-            }
+        if (words.isEmpty()) {
+            System.out.println("The string does not contain any words.");
+            scanner.close();
+            return;
         }
-        System.out.println("Letter counts: " + charCount);
+
+        System.out.println("\nNumber of words: " + words.size());
+
+        System.out.println("\nNumber of letters in each word:");
+        for (String word : words) {
+            System.out.println(word + " -> " + word.length());
+        }
+
+        List<String> sortedWords = new ArrayList<>(words);
+        sortedWords.sort(String.CASE_INSENSITIVE_ORDER);
+
+        System.out.println("\nWords in alphabetical order:");
+        for (String word : sortedWords) {
+            System.out.println(word);
+        }
+
+        long countKomp = words.stream()
+                .filter(w -> w.toLowerCase().startsWith("comp"))
+                .count();
+
+        System.out.println("\nNumber of words starting with \"comp\": " + countKomp);
+        scanner.close();
     }
 }
